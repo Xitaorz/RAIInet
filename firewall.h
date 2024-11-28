@@ -6,7 +6,7 @@
 class FireWall : public Ability {
     char id = 'F';
     public:
-        void use(int col, int row, Player* player);
+        void use(int col, int row, Player* player) override;
 };
 
 #endif

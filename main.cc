@@ -26,7 +26,23 @@ int main () {
 
     vector<Observer*> observers;
     
-    s.gameboard() = make_unique<Player>(s.gameboard(), 1 );
+    map<int, Player*> players;
+    int playerNum;
+
+    cout << "Insert the number of players: ";
+    cin >> playerNum;
+    for (int i = 0; i < playerNum; ++i) {
+        auto newPlayer = make_unique<Player>(s->gameboard(), 1);
+        players[i] = newPlayer.get();
+        s->gameboard() = move(newPlayer);
+    }
+
+    for (int i = 0; i < playerNum; ++i) {
+        for (int j = 0; j < playerNum; ++j){
+            if ( i != j) players[i]->addOpponent(j, players[j]); 
+        }   
+    }
+    
 
     while (std::cin >> command) {
         if (command == "render" ) {

@@ -10,13 +10,22 @@ void Player::addLink(int col, int row, int what, int strength, char name){
     links[name] = {col, row, what, strength, name};
 }
 
-char Player::linkAt(int x, int y){
-    for (int i = 0; i < linkNum; ++i) {
-        if (links[i].getCol() == x && links[i].getRow() == y) {
-            return links[i].getName();
+void Player::addFireWall(int col, int row, char name) {
+    fireWalls.emplace_back(Link(col, row, 2, 0, name));
+}
+
+char Player::linkAt(int col, int row){
+    for (auto& [name, link] : links) {
+        if (links[name].getCol() == col && links[name].getRow() == row) {
+            return name;
         }
     }
-    return previous->linkAt(x, y);
+    for (auto f : fireWalls) {
+        if (f.getCol() == col && f.getRow() == row) {
+            return f.getName();
+        }
+    }
+    return previous->linkAt(row, col);
 }
 
 Link* Player::getLink(char name) {
@@ -30,17 +39,39 @@ Link* Player::getAllLink(char name) {
     for (int i = 0; i < linkNum; ++i) {
         if (links[i].getName() == name) return &links[i];
     }
-    return opponent->getLink(name);
+    for (auto& [id, opp]: opponents){
+        Link* theLink = opp->getLink(name);
+        if (theLink) {
+            return theLink;
+        }
+    }
 }
 
 int Player::getId() {
     return id;
 }
 
-void Player::moveLink(char name, int moveX, int moveY) {
-    for (int i = 0; i < linkNum; ++i) {
-        if (links[i].getName() == name) {
-            links[i].move(moveX, moveY);
+void Player::moveLink(char name, int moveC, int moveR) {
+    Link* theLink = &links[name];
+    theLink->move(moveC, moveR);
+    int newC = theLink->getCol();
+    int newR = theLink->getRow();
+    for (auto [id, opp] : opponents){
+        char target = opp->linkAt(newC, newR);
+        Link* enemy = opp->getLink(target);
+        if (opp->fireWalled(newC, newR)) {
+            theLink->reveal();
+        }
+        if (enemy) {
+            bool result = theLink->battle(enemy);
+            if (result) {
+                download(target);
+                cout << "You won the battle!" << endl;
+            }
+            else {
+                opp->download(name);
+                cout << "You lost the battle!" << endl;
+            }
         }
     }
 }
@@ -55,13 +86,21 @@ void Player::download(char name) {
         link = getAllLink(name);
         if(link->isVirus()) downloadedV++;
         else downloadedF++;
-        opponent->deleteLink(name);
+        for (auto& [id, opp] : opponents) {
+            opp->deleteLink(name);
+        }      
     }
 }
 
 void Player::deleteLink(char name) {
-    links.erase(name);
-    linkNum--;
+    if (getLink(name)) {
+        links.erase(name);
+        linkNum--;
+    }
+}
+
+void Player::addOpponent(int id, Player* opp) {
+    opponents[id] = opp;
 }
 
 void Player::addAbility(char newName, unique_ptr<Ability> newAbility) {
@@ -76,8 +115,15 @@ void Player::addAbility(char newName, unique_ptr<Ability> newAbility) {
     abilityCount++;    
 }
 
-void Player::useAbility(int id){   
-    abilities[id].first->use(opponent);  
+bool Player::fireWalled(int col, int row) {
+    for (auto f : fireWalls) {
+        if (f.getCol() == col && f.getRow() == row) return true;
+    }
+    return false;
+}
+
+void Player::useAbility(int id, int opp){   
+    abilities[id].first->use(opponents[opp]);  
     abilities[id].second--;
     abilityCount--;       
 }

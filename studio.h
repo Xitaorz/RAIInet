@@ -17,9 +17,9 @@
 using namespace std;
 
 class Studio : public Subject{
-
-
-
+    unique_ptr<Board> theBoard;
+    public:
+        unique_ptr<Board> gameboard();
 };
 
 

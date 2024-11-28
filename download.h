@@ -5,7 +5,7 @@
 class Download : public Ability {
     char id = 'D';
     public:
-        void use(Link* link, Player* player);
+        void use(Link* link, Player* player) override;
 };
 
 #endif

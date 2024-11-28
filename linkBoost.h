@@ -10,7 +10,7 @@ class LinkBoost : public Ability{
     char id = 'L';
     public:
         LinkBoost(); 
-        void use(Link* link);
+        void use(Link* link, Player* player) override;
 
 };
 

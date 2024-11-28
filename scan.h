@@ -6,7 +6,7 @@
 class Scan : public Ability {
     char id = 'S';
     public:
-        void use(Link* link);
+        void use(Link* link, Player* player) override;
 };
 
 #endif

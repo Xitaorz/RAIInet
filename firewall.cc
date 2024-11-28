@@ -5,5 +5,5 @@ void FireWall::use(int col, int row, Player* player) {
     int id = player->getId();
     if (id == 1) name = 'm';
     else name = 'w';
-    player->addLink(col, row, 2, 0, name);
+    player->addFireWall(col, row, name);
 }

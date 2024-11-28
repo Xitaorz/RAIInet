@@ -20,11 +20,13 @@ int Link::getStrength(){
 }
 
 void Link::move(int moveCol, int moveRow) {
-    
     col += moveCol * step;
     row += moveRow * step;
-    
+}
 
+bool Link::battle(Link* target) {
+    if (strength > target->getStrength()) return true;
+    return false;
 }
 
 void Link::boost(){
@@ -40,6 +42,16 @@ void Link::reveal() {
     visible = true;
 }
 
+void Link::teleport(int newCol, int newRow) {
+    col = newCol;
+    row = newRow;
+}
+
+void Link::invincible() {
+    isInvincible = true;
+}
+
 bool Link::isVirus(){
     return what == 1;
 }
+

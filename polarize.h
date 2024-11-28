@@ -6,7 +6,7 @@
 class Polarize : public Ability {
     char id = 'P';
     public:
-        void use(Link* link);
+        void use(Link* , Player* player) override;
 };
 
 #endif
