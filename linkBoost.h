@@ -2,13 +2,14 @@
 #define LINKBOOST_H
 #include <vector>
 #include "ability.h"
+#include "link.h"
 
 using namespace std;
 
 class LinkBoost : public Ability{
     char id = 'L';
-    Link* theLink;
     public:
+        LinkBoost(); 
         void use(Link* link);
 
 };

@@ -5,19 +5,21 @@
 using namespace std;
 
 class Link{
-    int x , y, what, strength;
+    int col, row, what, strength;
     int step = 1;
     char name;
-    bool visible;
-    bool buffed;
+    bool visible = false;
     public:
-        Link(int x, int y, int what, int strength, char name, bool visible = false, bool buffed = false);
-        int getX();
-        int getY();
+        Link(int col, int row, int what, int strength, char name);
+        int getCol();
+        int getRow();
         char getName();
         int getStrength();
         void move(int moveX, int moveY);
         void boost();
+        void polarize();
+        void reveal();
+        bool isVirus();
 
 };
 

@@ -1,17 +1,25 @@
 #ifndef ABILITY_H
 #define ABILITY_H
 #include <vector>
-#
+
 
 using namespace std;
 
+//forward declaration
+class Player;
+class Link;
+
 class Ability{
-    char name;
-    Board* board;
+    protected:
+        char id;
     public:
         virtual ~Ability() = 0;
         virtual void use();
-        void getName();
+        virtual void use(Player * opp);
+        virtual void use(int col, int row, Player* player);
+        virtual void use(Link* link, Player* player = nullptr);
+        virtual void use(Link* link1, Link* link2);
+        char getName();
 
 };
 

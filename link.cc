@@ -1,14 +1,14 @@
 #include "link.h"
 
-Link::Link (int x, int y, int what, int strength,  char name, bool visible, bool buffed):
-x{x}, y{y}, what{what}, strength{strength}, name{name}, visible{visible}, buffed{buffed} {}
+Link::Link (int x, int y, int what, int strength,  char name):
+col{col}, row{row}, what{what}, strength{strength}, name{name}{}
 
-int Link::getX(){
-    return x;
+int Link::getCol(){
+    return col;
 }
 
-int Link::getY(){
-    return y;
+int Link::getRow(){
+    return row;
 }
 
 char Link::getName(){
@@ -19,14 +19,27 @@ int Link::getStrength(){
     return strength;
 }
 
-void Link::move(int moveX, int moveY) {
+void Link::move(int moveCol, int moveRow) {
     
-    x += moveX * step;
-    y += moveY * step;
+    col += moveCol * step;
+    row += moveRow * step;
     
 
 }
 
 void Link::boost(){
     step++;
+}
+
+void Link::polarize() {
+    if (what == 0) what = 1;
+    else if (what == 1) what = 0;
+}
+
+void Link::reveal() {
+    visible = true;
+}
+
+bool Link::isVirus(){
+    return what == 1;
 }
