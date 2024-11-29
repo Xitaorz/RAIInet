@@ -57,18 +57,26 @@ void Player::moveLink(char name, int moveC, int moveR) {
     theLink->move(moveC, moveR);
     int newC = theLink->getCol();
     int newR = theLink->getRow();
-    //still needs update for four players' case
-    if (abs(newR - theLink->initR) == 8) {
-        download(name)
-    }else if {
-        //reach the server
+
+    //reached the border
+    if (abs(newR - theLink->getInitR()) == 8) {
+        download(name);
     }
+
+
     for (auto [id, opp] : opponents){
         char target = opp->linkAt(newC, newR);
         Link* enemy = opp->getLink(target);
         if (opp->fireWalled(newC, newR)) {
             theLink->reveal();
         }
+
+        //reached the opp's server
+        else if (target == 'S'){
+            opp->download(name);
+        }
+
+        //encountered a link
         if (enemy) {
             bool result = theLink->battle(enemy);
             if (result) {
@@ -127,6 +135,10 @@ bool Player::fireWalled(int col, int row) {
         if (f.getCol() == col && f.getRow() == row) return true;
     }
     return false;
+}
+
+void Player::freeze() {
+    freezed++;
 }
 
 void Player::useAbility(int id, int opp){   

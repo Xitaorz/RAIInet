@@ -40,6 +40,7 @@ class Player : public Board {
         void deleteLink(char name);
         void addOpponent(int id, Player* opp);
         bool fireWalled(int col, int row);
+        void freeze();
         void addAbility(char newName, unique_ptr<Ability> newAbility);
         void useAbility(int id, int opp = 1);                            // for abilities targeting the opponent
         void useAbility(int id, int col, int row);          // for abilities targeting a square

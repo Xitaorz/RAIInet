@@ -10,12 +10,15 @@ class Link{
     char name;
     bool visible = false;
     bool isInvincible = false;
+    int initC, initR;
     public:
         Link(int col, int row, int what, int strength, char name);
         int getCol();
         int getRow();
         char getName();
         int getStrength();
+        int getInitC();
+        int getInitR();
         void move(int col, int row);
         bool battle(Link* target);
         void boost();
