@@ -4,7 +4,7 @@
 #include <utility>
 #include <memory>
 #include <map>
-#include <stdlib>
+#include <stdlib.h>
 #include "board.h"
 #include "link.h"
 #include "ability.h"
