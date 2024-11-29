@@ -1,6 +1,7 @@
 #ifndef STUDIO_H
 #define STUDIO_H
 #include <iostream>
+#include <fstream>
 #include <memory>
 #include <utility>
 #include <vector>
@@ -18,7 +19,9 @@ using namespace std;
 
 class Studio : public Subject{
     unique_ptr<Board> theBoard;
-
+    vector<Player*> players;
+    int playerNum = 0;
+    int turn = 0;
     public:
         // Studio ctor
         explicit Studio(unique_ptr<Board> board) : theBoard(move(board)) {}
@@ -36,6 +39,13 @@ class Studio : public Subject{
         // calls the cell at the location on the board
         char getState(int row, int col) const override;
 
+        void addPlayerAbilities(string abilities, int id);
+
+        bool addPlayerLinks(string filename, int id);
+
+        bool movePlayer(char link, char dir);
+
+        int whoseTurn();
         
 };
 

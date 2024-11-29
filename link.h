@@ -9,7 +9,7 @@ class Link{
     int step = 1;
     char name;
     bool visible = false;
-    bool isInvincible = false;
+    bool invincible = false;
     int initC, initR;
     public:
         Link(int col, int row, int what, int strength, char name);
@@ -19,13 +19,14 @@ class Link{
         int getStrength();
         int getInitC();
         int getInitR();
-        void move(int col, int row);
+        bool move(int col, int row);
         bool battle(Link* target);
         void boost();
         void polarize();
         void reveal();
         void teleport(int col, int row);
-        void invincible();
+        void makeInvincible();
+        bool isInvincible();
         bool isVirus();
 
 };

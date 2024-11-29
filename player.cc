@@ -52,9 +52,9 @@ int Player::getId() {
     return id;
 }
 
-void Player::moveLink(char name, int moveC, int moveR) {
+bool Player::moveLink(char name, int moveC, int moveR) {
     Link* theLink = &links[name];
-    theLink->move(moveC, moveR);
+    if(theLink->move(moveC, moveR)) return true;
     int newC = theLink->getCol();
     int newR = theLink->getRow();
 
@@ -67,6 +67,14 @@ void Player::moveLink(char name, int moveC, int moveR) {
     for (auto [id, opp] : opponents){
         char target = opp->linkAt(newC, newR);
         Link* enemy = opp->getLink(target);
+
+        //undo the move if enemy is invincible
+        if (enemy->isInvincible()) {
+            cerr << "The target link is invincible" << endl;
+            theLink->move(-moveC, - moveR);
+        }
+
+        //reveal the link if it steps on a firewall
         if (opp->fireWalled(newC, newR)) {
             theLink->reveal();
         }
@@ -89,6 +97,7 @@ void Player::moveLink(char name, int moveC, int moveR) {
             }
         }
     }
+    return false;
 }
 
 void Player::download(char name) {
@@ -118,6 +127,8 @@ void Player::addOpponent(int id, Player* opp) {
     opponents[id] = opp;
 }
 
+
+
 void Player::addAbility(char newName, unique_ptr<Ability> newAbility) {
     for (auto& [id, ability] : abilities) {
         auto& [ptr, uses] = ability;
@@ -139,6 +150,13 @@ bool Player::fireWalled(int col, int row) {
 
 void Player::freeze() {
     freezed++;
+}
+
+bool Player::isFreezed() {
+    if (freezed > 0) {
+        freezed--;
+        return true;
+    }
 }
 
 void Player::useAbility(int id, int opp){   

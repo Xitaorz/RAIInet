@@ -27,12 +27,15 @@ int Link::getInitR() {
     return initR;
 }
 
-void Link::move(int moveCol, int moveRow) {
+bool Link::move(int moveCol, int moveRow) {
     col += moveCol * step;
     row += moveRow * step;
+    if (col < 0 || col > 7) return true;
+    return false;
 }
 
 bool Link::battle(Link* target) {
+    
     if (strength > target->getStrength()) return true;
     return false;
 }
@@ -55,8 +58,12 @@ void Link::teleport(int newCol, int newRow) {
     row = newRow;
 }
 
-void Link::invincible() {
-    isInvincible = true;
+void Link::makeInvincible() {
+    invincible = true;
+}
+
+bool Link::isInvincible(){
+    return invincible;
 }
 
 bool Link::isVirus(){
