@@ -30,7 +30,7 @@ int main () {
 
     Studio s{board.get()};
 
-    vector<Observer*> observers;
+    vector<unique_ptr<Observer>> observers;
     
     char playerNum;
 
@@ -97,16 +97,14 @@ int main () {
     cout << "current Player: Player" << s.whoseTurn() + 1 << endl;
     cout << "=======================" << endl;
 
-    ifstream f{};
-    while (f >> command || cin >> command){
+    ifstream f;
+    while (f >> command ?: cin >> command){
          // Player input command
         // TODO: check implementation & ensure functional display
         // } else if (command == "-graphics") {
         //     //add graphic observer
         //     s.attach();
-        if (f.eof()){
-            f.close();
-        }
+
         if (s.jumpPlayer()) {
                 cerr << "Player " << s.whoseTurn() + 1 << " is jumped due to The World" << endl;
                 s.turnOver();
@@ -122,7 +120,7 @@ int main () {
             // dir can be 'U', 'D', 'L', or 'R'
         if (command == "move") {
             char linkId, dir;
-            f >> linkId >> dir? : cin >> linkId >> dir;
+            (f >> linkId >> dir)? : cin >> linkId >> dir;
 
             
             while(s.movePlayer(linkId, dir)){
@@ -146,24 +144,24 @@ int main () {
             int x, y;
             char which, whom, link1, link2;
             char cAbilityId;
-            cin >> cAbilityId;
+            (f >> cAbilityId) ?:  cin >> cAbilityId;
             int abilityId = cAbilityId - '0';
             int whichType = s.whichAbility(cAbilityId);
             switch (whichType) {
                 case 1:
-                    cin >> whom;
+                    f >> whom?:cin >> whom;
                     s.usePlayerAbilityType1(abilityId, whom - '0');
                     break;
                 case 2:
-                    cin >> x >> y;
+                    f >> x >> y?:cin >> x >> y;
                     s.usePlayerAbilityType2(abilityId, x, y);
                     break;
                 case 3:
-                    cin >> which;
+                    f >> which?:cin >> which;
                     s.usePlayerAbilityType3(abilityId, which);
                     break;
                 case 4:
-                    cin >> link1 >> link2;
+                    f >> link1 >> link2?:cin >> link1 >> link2;
                     s.usePlayerAbilityType4(abilityId, link1, link2);
                     break;
             }
@@ -177,11 +175,11 @@ int main () {
             continue;
         }else if (command == "sequence"){
             string filename;
-            cin >> filename;
+            f >> filename ?: cin >> filename;
             f.open(filename);
             continue;
         }else if (command == "graphics"){
-            unique_ptr<Graphics> graphic{new Graphics{&s}};
+            observers.emplace_back(new Graphics{&s});
         }else if (command == "quit"){
             return 2;
         }else {
