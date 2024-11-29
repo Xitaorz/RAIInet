@@ -8,7 +8,7 @@ class Board {
     //int Width;
     public:
         virtual ~Board();
-        virtual char linkAt(int x, int y);
+        virtual char linkAt(int x, int y) = 0;
 };
 
 #endif

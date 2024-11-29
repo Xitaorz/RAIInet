@@ -15,20 +15,22 @@
 #include "scan.h"
 #include "download.h"
 
-using namespace std;
+using namespace std;        
 
 int main () {
+
+    // INITIALIZATION ----------------------------------------------------------------
+    // Board setup (concrete subject)
     unique_ptr<Board> board {new Blank};
 
-    Studio s{board};
-
-    string command;
+    Studio s{move(board)};
 
     vector<Observer*> observers;
     
-    map<int, Player*> players;
+    vector<Player*> players;
     int playerNum;
 
+    string command;
     cout << "Insert the number of players: ";
     cin >> playerNum;
     for (int i = 0; i < playerNum; ++i) {
