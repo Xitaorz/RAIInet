@@ -3,4 +3,16 @@
 -link2 names.txt
 -ability1 LFFFF
 -ability2 LFFFF
+abilities
+ability 2 3 3
+move a d
+ability 2 5 5
+move A u
 ability 1 a
+move a d
+move A u
+ability 2 4 5
+print
+move a d
+move E u
+print

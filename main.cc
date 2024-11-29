@@ -132,21 +132,25 @@ int main () {
             char cAbilityId;
             cin >> cAbilityId;
             int abilityId = cAbilityId - '0';
-            switch (s.whichAbility(cAbilityId)) {
+            int whichType = s.whichAbility(cAbilityId);
+            switch (whichType) {
                 case 1:
                     cin >> whom;
                     s.usePlayerAbilityType1(abilityId, whom);
+                    break;
                 case 2:
                     cin >> x >> y;
                     s.usePlayerAbilityType2(abilityId, x, y);
+                    break;
                 case 3:
                     cin >> which;
                     s.usePlayerAbilityType3(abilityId, which);
+                    break;
                 case 4:
                     cin >> link1 >> link2;
                     s.usePlayerAbilityType4(abilityId, link1, link2);
+                    break;
             }
-            s.notifyObservers();
     }else if (command == "print"){
         s.notifyObservers();
     }else if (command == "abilities"){

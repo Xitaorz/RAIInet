@@ -39,15 +39,12 @@ Link* Player::getLink(char n) {
     for (auto& [name, link] : links) {
         if (n == name) return link.get();
     }
-    cout << "got here" << endl;
     return nullptr;
 }
 
 Link* Player::getAllLink(char name) {
-    cout << "got here" << endl;
     Link* target = getLink(name);
     if (target) return target;
-    cout << "got here" << endl;
     for (auto& [id, opp]: opponents){
         Link* theLink = opp->getLink(name);
         if (theLink) {
@@ -148,6 +145,7 @@ void Player::addAbility(char newName, unique_ptr<Ability> newAbility) {
         auto ptr = ability.first.get();
         if (newName == ptr->getName()) {
             ability.second++;
+            abilityCount++;  
             return;
         }
     }
@@ -199,7 +197,6 @@ void Player::useAbility(int abilityId, int col, int row){
 }
 
 void Player::useAbility(int abilityId, char name){
-    cout << abilityId << endl;
     (abilities[abilityId].first)->use(getAllLink(name), this);
     abilities[abilityId].second--;
     abilityCount--;
