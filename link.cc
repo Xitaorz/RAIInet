@@ -1,7 +1,10 @@
 #include "link.h"
 
-Link::Link (int x, int y, int what, int strength,  char name):
-col{col}, row{row}, what{what}, strength{strength}, name{name}{}
+Link::Link (int x, int y, int what, int strength,  char name, int initC, int initR):
+col{col}, row{row}, what{what}, strength{strength}, name{name}{
+    const int initC = col;
+    const int initR = row;
+}
 
 int Link::getCol(){
     return col;

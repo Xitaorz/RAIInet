@@ -6,8 +6,9 @@ using namespace std;
 Player::Player(Board* pre, int id, int abilityCount, int downloadedV, int downloadedF): 
 previous{pre}, id{id}, abilityCount{abilityCount}, downloadedF{downloadedF}, downloadedV{downloadedV}{}
 
+
 void Player::addLink(int col, int row, int what, int strength, char name){
-    links[name] = {col, row, what, strength, name};
+    links[name] = Link(col, row, what, strength, name);
 }
 
 void Player::addFireWall(int col, int row, char name) {
@@ -25,7 +26,7 @@ char Player::linkAt(int col, int row){
             return f.getName();
         }
     }
-    return previous->linkAt(row, col);
+    return previous->linkAt(col, row);
 }
 
 Link* Player::getLink(char name) {
@@ -56,6 +57,12 @@ void Player::moveLink(char name, int moveC, int moveR) {
     theLink->move(moveC, moveR);
     int newC = theLink->getCol();
     int newR = theLink->getRow();
+    //still needs update for four players' case
+    if (abs(newR - theLink->initR) == 8) {
+        download(name)
+    }else if {
+        //reach the server
+    }
     for (auto [id, opp] : opponents){
         char target = opp->linkAt(newC, newR);
         Link* enemy = opp->getLink(target);
@@ -66,11 +73,11 @@ void Player::moveLink(char name, int moveC, int moveR) {
             bool result = theLink->battle(enemy);
             if (result) {
                 download(target);
-                cout << "You won the battle!" << endl;
+                cerr << "You won the battle!" << endl;
             }
             else {
                 opp->download(name);
-                cout << "You lost the battle!" << endl;
+                cerr << "You lost the battle!" << endl;
             }
         }
     }

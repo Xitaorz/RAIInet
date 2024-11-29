@@ -20,7 +20,7 @@ using namespace std;
 int main () {
     unique_ptr<Board> board {new Blank};
 
-    Studio* s{board};
+    Studio s{board};
 
     string command;
 
@@ -32,9 +32,9 @@ int main () {
     cout << "Insert the number of players: ";
     cin >> playerNum;
     for (int i = 0; i < playerNum; ++i) {
-        auto newPlayer = make_unique<Player>(s->gameboard(), 1);
+        auto newPlayer = make_unique<Player>(s.gameboard(), 1);
         players[i] = newPlayer.get();
-        s->gameboard() = move(newPlayer);
+        s.gameboard() = move(newPlayer);
     }
 
     for (int i = 0; i < playerNum; ++i) {

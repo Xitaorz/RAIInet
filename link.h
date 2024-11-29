@@ -5,7 +5,7 @@
 using namespace std;
 
 class Link{
-    int col, row, what, strength;
+    int col, row, what, strength;  //strength: 0:data, 1:virus, 2:firewall(probably not gonna need this)
     int step = 1;
     char name;
     bool visible = false;

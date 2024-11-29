@@ -4,6 +4,7 @@
 #include <utility>
 #include <memory>
 #include <map>
+#include <stdlib>
 #include "board.h"
 #include "link.h"
 #include "ability.h"
@@ -27,13 +28,14 @@ class Player : public Board {
         int freezed = 0;       
     public:
         Player(Board* pre, int id, int abilityCount = 0, int downloadedV = 0, int downloadedF = 0){};
+        void initialize();
         void addLink(int col, int row, int what, int strength, char name);
         void addFireWall(int col, int row, char name);
         char linkAt(int col, int row) override;
         Link* getLink(char name);
         Link* getAllLink(char name);
         int getId();
-        void moveLink(char name, int moveX, int moveY);
+        void moveLink(char name, int moveC, int moveR);
         void download(char name);
         void deleteLink(char name);
         void addOpponent(int id, Player* opp);
