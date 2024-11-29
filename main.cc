@@ -3,6 +3,7 @@
 #include <memory>
 #include <utility>
 #include <vector>
+#include <sstream>
 #include "studio.h"
 #include "board.h"
 #include "blank.h"
@@ -97,7 +98,8 @@ int main () {
     cout << "=======================" << endl;
 
     ifstream f{};
-    while (f >> command || cin >> command){ // Player input command
+    while (f >> command || cin >> command){
+         // Player input command
         // TODO: check implementation & ensure functional display
         // } else if (command == "-graphics") {
         //     //add graphic observer
@@ -119,14 +121,14 @@ int main () {
             // a has to be a link the currrent player controls
             // dir can be 'U', 'D', 'L', or 'R'
         if (command == "move") {
-            
             char linkId, dir;
-            cin >> linkId;
-            cin >> dir;
+            f >> linkId >> dir? : cin >> linkId >> dir;
+
+            
             while(s.movePlayer(linkId, dir)){
-                cin >> command;
-                cin >> linkId;
-                cin >> dir;
+                f >> command ? :cin >>command;
+                f >> linkId ? :cin >>linkId;
+                f >> dir ? :cin >>dir;
             }
             s.notifyObservers();
             

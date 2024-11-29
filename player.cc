@@ -109,7 +109,12 @@ bool Player::moveLink(char name, int moveC, int moveR) {
 
         //reveal the link if it steps on a firewall
         if (opp->fireWalled(newC, newR)) {
-            theLink->reveal();
+            if (theLink->isVirus()){
+                download(name);
+            }else{
+                theLink->reveal();
+            }
+            
         }
 
         //reached the opp's server
