@@ -28,28 +28,19 @@ int main () {
 
     vector<Observer*> observers;
     
-    vector<Player*> players;
     int playerNum;
 
     cout << "Enter the number of players: ";
     cin >> playerNum;
-    for (int i = 0; i < playerNum; ++i) {
-        auto newPlayer = make_unique<Player>(s.gameboard(), 1);
-        players[i] = newPlayer.get();
-        s.gameboard() = move(newPlayer);
-    }
 
-    for (int i = 0; i < playerNum; ++i) {
-        for (int j = 0; j < playerNum; ++j){
-            if ( i != j) players[i]->addOpponent(j, players[j]); 
-        }   
-    }
-    
-    int turn;
+    s.startGame(playerNum);
+    unique_ptr<Observer> textObs1 {new Text(&s, 1, 8)};
+    unique_ptr<Observer> textObs2 {new Text(&s, 2, 8)};
+
     string command;
 
     while (cin >> command){ // Player input command
-        cerr << "Curreent turn: " << turn << endl;
+        cerr << "Curreent turn: Player " << s.whoseTurn() << endl;
 
         // SETUP ABILITIES --------------------------------
 
@@ -121,9 +112,9 @@ int main () {
 
 
         // TODO: check implementation & ensure functional display
-        } else if (command == "-graphics") {
-            //add graphic observer
-            s.attach();
+        // } else if (command == "-graphics") {
+        //     //add graphic observer
+        //     s.attach();
 
         // INTERACTIVE COMMANDS ---------------------------------------------------------
 
@@ -148,59 +139,38 @@ int main () {
             // Scan: "ability <S> b" reveals the type and strength of any opponent link 'b'
             // MadeInHeaven: "ability <M> b: attaches permanent ability protection on link 'b'
             // KingCrimson: "ability <K> b x y" moves link 'b' to position (x, y)
-            // Jumper: "ability <J>" skips the opponent's next turn (player gets 2 turns)
+            // TheWorld: "ability <T>" skips the opponent's next turn (player gets 2 turns)
         } else if (command == "ability") {
             int order, x, y;
-            char link;
-            cin >> order;
-            char ability_id = s.whoseTurn();
+            char which, whom, link1, link2;
+            char temp;
+            char abilityId;
+            cin >> temp >> abilityId >> temp;
+            switch (s.whichAbility(abilityId)) {
+                case 1:
+                    cin >> whom;
+                    s.usePlayerAbilityType1(abilityId, whom);
+                case 2:
+                    cin >> x >> y;
+                    s.usePlayerAbilityType2(abilityId, x, y);
+                case 3:
+                    cin >> which;
+                    s.usePlayerAbilityType3(abilityId, which);
+                case 4:
+                    cin >> link1 >> link2;
+                    s.usePlayerAbilityType4(abilityId, link1, link2);
+            }
+    }
 
-            if(ability_id ==''){
-                cerr << "Error: invalid ability ID" << endl;
-            }
-            else if (find(longTermLinkAbilitiesId.begin(), longTermLinkAbilitiesId.end(), ability_id) != longTermLinkAbilitiesId.end()) {
-                game.playerAbilityToPlayerLink(turn, link, ability_id);
-            }
-            else if (find(attackAbilitiesId.begin(), attackAbilitiesId.end(), ability_id) != attackAbilitiesId.end()) {
-                game.playerAbilityToOpponentLink(turn, link, ability_id);
-            }
-            else if (ability_id =='F') { // Firewall
-                cin >> x >> y ;
-                
-                game.Board() = new FirewallDecorator(game.Board(), turn, numPlayers, x, y, game.getLinkPositions());
-            }
-            else if (ability_id == 'J') { // Jumper
-                turn++;
-                continue; // skips to next iteration immediately
-            }
-            else if(ability_id == 'K') { // KingCrimson
-                cin >>link>> x >> y ;
-                game.Board() = new KingCrimsonDecorator(game.Board(), link, x, y, game.getLinkPositions());
-            }
-
-        // Display abilities possessed by the current player
-            // Display ability ID (1 - 8)
-            // Display if ability has been used
-        } else if (command == "abilities") {
-            game.displayAbilities(turn);
-
-        // Display the current board to the graphics section
-        } else if (command == "board") {
-            gameboard.render();
-
-        // Exit the game
-        } else if (command == "quit" || command == "q") {
-            cout << "Game exited successfully!" << endl;
-            return 0;
-        } else {
-            cerr << "Error: invalid command. Please try again. " << endl;
-        }
+            
 
         // WIN/LOSS CONDITIONS ----------------------------------------------------------
-        if (game.findWinner() != 0) {
-            cout << "Congratulations! Player " <<  game.findWinner() << ", you've downloaded 4 data, you have won the game!" << endl;
-        } if (game.findLoser() != 0) {
-            cout << "Sorry! Player " << game.findLoser() << ", you've downloaded 4 viruses, you have lost the game!" << endl;
+        int won = s.whoWon();
+        int lost = s.whoLost();
+        if (won != 0) {
+            cout << "Congratulations! Player " <<  won << ", you've downloaded 4 data, you have won the game!" << endl;
+        } if (lost != 0) {
+            cout << "Sorry! Player " << lost << ", you've downloaded 4 viruses, you have lost the game!" << endl;
         }
 
     }

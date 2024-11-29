@@ -3,8 +3,8 @@
 
 using namespace std;
 
-Text::Text(Studio *studio, int id, int abilities, int sideLength):
-studio{studio}, abilities{abilities}, sideLength{sideLength}{
+Text::Text(Studio *studio, int id,  int sideLength):
+studio{studio}, sideLength{sideLength}{
     studio->attach(this);
     if (id == 1) otherId = 2;
     else otherId = 1;
@@ -38,5 +38,5 @@ void Text::notify () {
     cout << endl << "Abilities: ";
     studio->printPlayerAbilityCount(otherId);
     cout << endl;
-    studio->printLinks(otherId);
+    studio->printLinks(id);
 }

@@ -17,6 +17,7 @@ class Link{
         int getRow();
         char getName();
         int getStrength();
+        char getType();
         int getInitC();
         int getInitR();
         bool move(int col, int row);
@@ -28,6 +29,7 @@ class Link{
         void makeInvincible();
         bool isInvincible();
         bool isVirus();
+        bool isVisible();
 
 };
 

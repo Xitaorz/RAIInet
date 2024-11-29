@@ -1,5 +1,5 @@
-#ifndef KINGCRIMSON_H
-#define KINGCRIMSON_H
+#ifndef MADEINHEAVEN_H
+#define MADEINHEAVEN_H
 #include "ability.h"
 #include "link.h"
 

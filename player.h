@@ -16,7 +16,7 @@ using namespace std;
 class Player : public Board {
     protected:
         int id;
-        Board* previous;
+        unique_ptr<Board> previous;
         map<char, Link> links;
         vector<Link> fireWalls;
         int linkNum = 8;
@@ -27,7 +27,7 @@ class Player : public Board {
         int downloadedV, downloadedF;
         int freezed = 0;       
     public:
-        Player(Board* pre, int id, int abilityCount = 0, int downloadedV = 0, int downloadedF = 0){};
+        Player(unique_ptr<Board> pre, int id, int abilityCount = 0, int downloadedV = 0, int downloadedF = 0){};
         
         //adders
         void addLink(int col, int row, int what, int strength, char name);
@@ -38,6 +38,9 @@ class Player : public Board {
         Link* getLink(char name);
         Link* getAllLink(char name);
         int getId();
+        int getAbilityCount();
+        int getDownloadedF();
+        int getDownloadedV();
 
         //interactions
         bool moveLink(char name, int moveC, int moveR);
@@ -51,10 +54,14 @@ class Player : public Board {
         //Abilities
         //void setDefaultAbilities();
         void addAbility(char newName, unique_ptr<Ability> newAbility);
-        void useAbility(int id, int opp = 1);               // for abilities targeting the opponent
+        int checkAbilityType(int id);
+        void useAbility(int id, int opp);               // for abilities targeting the opponent
         void useAbility(int id, int col, int row);          // for abilities targeting a square
         void useAbility(int id, char name);                 // for abilities targeting a link
         void useAbility(int id, char name1, char name2);    // for abilities targeting two links
+
+        //
+        void printLinks(int id);
 };
 
 #endif

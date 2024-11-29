@@ -3,8 +3,8 @@
 
 using namespace std;
 
-Player::Player(Board* pre, int id, int abilityCount, int downloadedV, int downloadedF): 
-previous{pre}, id{id}, abilityCount{abilityCount}, downloadedF{downloadedF}, downloadedV{downloadedV}{}
+Player::Player(unique_ptr<Board> pre, int id, int abilityCount, int downloadedV, int downloadedF): 
+previous{move(pre)}, id{id}, abilityCount{abilityCount}, downloadedF{downloadedF}, downloadedV{downloadedV}{}
 
 
 void Player::addLink(int col, int row, int what, int strength, char name){
@@ -48,9 +48,13 @@ Link* Player::getAllLink(char name) {
     }
 }
 
-int Player::getId() {
-    return id;
-}
+int Player::getId() {return id;}
+
+int Player::getAbilityCount(){return abilityCount;}
+
+int Player::getDownloadedF(){return downloadedF;}
+
+int Player::getDownloadedV(){return downloadedV;}
 
 bool Player::moveLink(char name, int moveC, int moveR) {
     Link* theLink = &links[name];
@@ -159,7 +163,19 @@ bool Player::isFreezed() {
     }
 }
 
-void Player::useAbility(int id, int opp){   
+int Player::checkAbilityType(int id) {
+    char name = abilities[id].first->getName();
+    if (name == 'T') return 1;
+    else if (name == 'F') return 2;
+    else if (name == 'L' || name == 'P' || name == 'S' || name == 'M') return 3;
+    else return 4;
+    
+
+
+}
+
+//case 1
+void Player::useAbility(int id, int opp){
     abilities[id].first->use(opponents[opp]);  
     abilities[id].second--;
     abilityCount--;       
@@ -172,7 +188,7 @@ void Player::useAbility(int id, int col, int row){
 }
 
 void Player::useAbility(int id, char name){
-    abilities[id].first->use(getLink(name), this);
+    abilities[id].first->use(getAllLink(name), this);
     abilities[id].second--;
     abilityCount--;
 }
@@ -182,3 +198,29 @@ void Player::useAbility(int id, char name1, char name2){
     abilities[id].second--;
     abilityCount--;
 }
+
+void Player::printLinks(int id){
+    if (id == this->id){
+        for (int i = 0; i < linkNum; i++){
+            cout << links[i].getName() << ": " << links[i].getType() << links[i].getStrength();
+            if (i == 3) cout << endl;
+        }
+    }else {
+        for (int i = 0; i < linkNum; i++){
+            if (links[i].isVisible()){
+                cout << links[i].getName() << ": " << links[i].getType() << links[i].getStrength();
+            }else{
+                cout << links[i].getName() << ": " << "? " ;
+            }
+            
+            if (i == 3) cout << endl;
+        }
+    }
+     
+}
+
+
+
+
+
+

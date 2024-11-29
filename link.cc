@@ -19,6 +19,14 @@ int Link::getStrength(){
     return strength;
 }
 
+char Link::getType(){
+    if (what == 0){
+        return 'D';
+    }else {
+        return 'V';
+    }
+} 
+
 int Link::getInitC(){
     return initC;
 }
@@ -68,5 +76,9 @@ bool Link::isInvincible(){
 
 bool Link::isVirus(){
     return what == 1;
+}
+
+bool Link::isVisible(){
+    return visible;
 }
 

@@ -14,6 +14,11 @@
 #include "firewall.h"
 #include "scan.h"
 #include "download.h"
+#include "madeInHeaven.h"
+#include "theWorld.h"
+#include "kingCrimson.h"
+#include "observer.h"
+#include "text.h"
 
 using namespace std;
 
@@ -39,6 +44,8 @@ class Studio : public Subject{
         // calls the cell at the location on the board
         char getState(int row, int col) const override;
 
+        void startGame(int PlayerNum);
+
         void addPlayerAbilities(string abilities, int id);
 
         bool addPlayerLinks(string filename, int id);
@@ -46,7 +53,20 @@ class Studio : public Subject{
         bool movePlayer(char link, char dir);
 
         int whoseTurn();
+
+        int whichAbility(int abilityId);
+
+        void usePlayerAbilityType1(int abilityId, int opp);
+        void usePlayerAbilityType2(int abilityId, int col, int row);
+        void usePlayerAbilityType3(int abilityId, char name);
+        void usePlayerAbilityType4(int abilityId, char name1, char name2);
         
+        int whoWon();
+        int whoLost();
+
+        void printDownloaded(int id);
+        void printPlayerAbilityCount(int id);
+        void printLinks(int id);
 };
 
 

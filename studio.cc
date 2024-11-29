@@ -13,6 +13,21 @@ char Studio::getState(int row, int col) const {
     return theBoard->linkAt(row, col);
 }
 
+void Studio::startGame(int playerNumber){
+    playerNum = playerNumber;
+    for (int i = 0; i < playerNum; ++i) {
+        auto newPlayer = make_unique<Player>(theBoard, 1);
+        players[i] = newPlayer.get();
+        theBoard = move(newPlayer);
+    }
+
+    for (int i = 0; i < playerNum; ++i) {
+        for (int j = 0; j < playerNum; ++j){
+            if ( i != j) players[i]->addOpponent(j, players[j]); 
+        }   
+    }
+}
+
 
 void Studio::addPlayerAbilities(string abilities, int id) {
     if(abilities ==""){ 
@@ -148,3 +163,54 @@ bool Studio::movePlayer(char link, char dir){
 int Studio::whoseTurn(){
     return turn % playerNum + 1;
 }
+
+int Studio::whichAbility(int abilityId) {
+    int playerId = whoseTurn();
+    return players[playerId]->checkAbilityType(abilityId);
+}
+
+void Studio::usePlayerAbilityType1(int abilityId, int opp){
+    int playerId = whoseTurn();
+    players[playerId]->useAbility(abilityId, opp);
+}
+
+void Studio::usePlayerAbilityType2(int abilityId, int col, int row){
+    int playerId = whoseTurn();
+    players[playerId]->useAbility(abilityId, col, row);
+}
+
+void Studio::usePlayerAbilityType3(int abilityId, char name){
+    int playerId = whoseTurn();
+    players[playerId]->useAbility(abilityId, name);
+}
+
+void Studio::usePlayerAbilityType4(int abilityId, char name1, char name2){
+    int playerId = whoseTurn();
+    players[playerId]->useAbility(abilityId, name1, name2);
+}
+
+int Studio::whoWon(){
+    int playerId = whoseTurn();
+    if (players[playerId]->getDownloadedF() >= 4) return playerId;
+    else return 0; //nobody won
+}
+
+int Studio::whoLost(){
+    int playerId = whoseTurn();
+    if (players[playerId]->getDownloadedV() >= 4) return playerId;
+    else return 0; //nobody won
+}
+
+
+void Studio::printDownloaded(int id){
+    cout << players[id]->getDownloadedF() << "D" << players[id]->getDownloadedV() << "V" << endl;
+}
+
+void Studio::printPlayerAbilityCount(int id){
+    cout << players[id]->getAbilityCount() << endl;
+}
+void Studio::printLinks(int id){
+
+    players[id]->printLinks(id);
+}
+

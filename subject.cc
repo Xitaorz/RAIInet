@@ -21,4 +21,3 @@ void Subject::notifyObservers() {
     /*** FILL IN ***/
     for (auto p: observers) p->notify();
 }
-

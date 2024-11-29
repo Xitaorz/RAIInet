@@ -8,7 +8,7 @@ class Text : public Observer {
     Studio *studio;
     int id, otherId, abilities, sideLength;
     public:
-        Text(Studio *studio, int id, int abilities, int sideLength);
+        Text(Studio *studio, int id, int sideLength);
         void notify() override;
 
 };
