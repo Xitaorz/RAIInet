@@ -56,7 +56,7 @@ int main () {
             }
         }
    }
-   s.notifyObservers();
+   
 
     cerr << "please enter the link setup for player2" << endl;
     while(cin>>command) {
@@ -72,7 +72,7 @@ int main () {
             }
         }
     }
-    s.notifyObservers();
+    
 
     cerr << "please enter the ability setup for player1" << endl;
     while(cin>>command) {      
