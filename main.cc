@@ -92,8 +92,9 @@ int main () {
             break;
         }
    }
-
+    cout << "=======================" << endl;
     cout << "current Player: Player" << s.whoseTurn() + 1 << endl;
+    cout << "=======================" << endl;
     while (cin >> command){ // Player input command
         // TODO: check implementation & ensure functional display
         // } else if (command == "-graphics") {
@@ -151,11 +152,15 @@ int main () {
                     s.usePlayerAbilityType4(abilityId, link1, link2);
                     break;
             }
-    }else if (command == "print"){
-        s.notifyObservers();
-    }else if (command == "abilities"){
-        s.printPlayerAbilities();
-    }
+            continue;
+
+        }else if (command == "print"){
+            s.notifyObservers();
+            continue;
+        }else if (command == "abilities"){
+            s.printPlayerAbilities();
+            continue;
+        }
 
             
 
@@ -167,7 +172,10 @@ int main () {
         }else if (lost != 0) {
             cout << "Sorry! Player " << lost << ", you've downloaded 4 viruses, you have lost the game!" << endl;
         }else{
-            cout << endl << "current Player: Player" << s.whoseTurn() + 1 << endl << endl;
+            s.turnOver();
+            cout << "=======================" << endl;
+            cout << "current Player: Player" << s.whoseTurn() + 1 << endl;
+            cout << "=======================" << endl;
         }
 
     }

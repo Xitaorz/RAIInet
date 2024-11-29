@@ -209,7 +209,7 @@ void Player::useAbility(int abilityId, char name1, char name2){
 }
 
 void Player::printLinks(int id){
-    if (id == this->id){
+    if (id + 1 == this->id){
         int i = 0;
         for (auto& [name, link] : links){
             cout << link->getName() << ": " << link->getType() << link->getStrength() << ' ';

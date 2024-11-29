@@ -171,7 +171,6 @@ bool Studio::movePlayer(char link, char dir){
     
     if (players[id]->getLink(link)) {
         if (players[id]->isFreezed()){
-            turn++;
             return false;
         }
         else {
@@ -192,7 +191,6 @@ bool Studio::movePlayer(char link, char dir){
                 cerr << "Invalid move, try again" << endl;
                 return true;
             }else {
-                turn++;
                 return false;
             }
         }
@@ -205,6 +203,10 @@ bool Studio::movePlayer(char link, char dir){
 
 int Studio::whoseTurn(){
     return turn % playerNum;
+}
+
+void Studio::turnOver(){
+    turn++;
 }
 
 int Studio::whichAbility(char abilityId) {

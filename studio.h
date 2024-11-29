@@ -51,7 +51,11 @@ class Studio : public Subject{
 
         int whoseTurn();
 
+        void turnOver();
+
         int whichAbility(char abilityId);
+
+        
 
         void usePlayerAbilityType1(int abilityId, int opp);
         void usePlayerAbilityType2(int abilityId, int col, int row);
