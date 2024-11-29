@@ -12,7 +12,6 @@ void Studio::startGame(char playN){
     for (int i = 0; i < playerNum; ++i) {    
         players.emplace_back(make_unique<Player>(theBoard, i + 1));
         theBoard = players[i].get();  
-        cerr<< "added" << i << endl;
     }
 
     for (int i = 0; i < playerNum; ++i) {
@@ -241,14 +240,14 @@ void Studio::usePlayerAbilityType4(int abilityId, char name1, char name2){
 
 int Studio::whoWon(){
     for (int i = 0; i < playerNum; ++i){
-        if (players[i]->getDownloadedF() >= 4) return i;
+        if (players[i]->getDownloadedF() >= 4) return i + 1;
     } 
     return 0; //nobody won
 }
 
 int Studio::whoLost(){
     for (int i = 0; i < playerNum; ++i){
-        if (players[i]->getDownloadedV() >= 4) return i;
+        if (players[i]->getDownloadedV() >= 4) return i + 1;
     } 
     return 0; //nobody won
 }

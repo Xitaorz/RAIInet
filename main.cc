@@ -41,7 +41,6 @@ int main () {
     //unique_ptr<Observer> textObs2 {new Text(&s, 2, 8)};
 
     string command;
-    s.notifyObservers();
     cerr << "please enter the link setup for player1" << endl;
     while(cin>>command) {
         if (command == "-link1"){
@@ -191,8 +190,8 @@ int main () {
             
 
         // WIN/LOSS CONDITIONS ----------------------------------------------------------
-        int won = s.whoWon() + 1;
-        int lost = s.whoLost() + 1;
+        int won = s.whoWon();
+        int lost = s.whoLost();
         if (won != 0) {
             cout << "Congratulations! Player " <<  won << ", you've downloaded 4 data, you have won the game!" << endl;
             return 0;
