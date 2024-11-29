@@ -6,7 +6,6 @@
 
 class TheWorld : public Ability {
     public:
-        
         TheWorld() { id = 'T'; }
         void use(int col, int row, Player* player){}
         void use(Link* link, Player* player = nullptr){}

@@ -16,6 +16,7 @@
 #include "scan.h"
 #include "download.h"
 #include "text.h"
+#include "graphics.h"
 #include "observer.h"
 
 using namespace std;        
@@ -102,6 +103,9 @@ int main () {
         // } else if (command == "-graphics") {
         //     //add graphic observer
         //     s.attach();
+        if (f.eof()){
+            f.close();
+        }
         if (s.jumpPlayer()) {
                 cerr << "Player " << s.whoseTurn() + 1 << " is jumped due to The World" << endl;
                 s.turnOver();
@@ -175,6 +179,8 @@ int main () {
             cin >> filename;
             f.open(filename);
             continue;
+        }else if (command == "graphics"){
+            unique_ptr<Graphics> graphic{new Graphics{&s}};
         }else if (command == "quit"){
             return 2;
         }else {
