@@ -4,9 +4,12 @@
 #include "link.h"
 
 class Scan : public Ability {
-    char id = 'S';
     public:
-        void use(Link* link, Player* player) override;
+        Scan() { id = 'S'; }
+        void use(Player * opp){}
+        void use(int col, int row, Player* player){}
+        void use(Link* link1, Link* link2){}
+        void use(Link* link, Player* player);
 };
 
 #endif

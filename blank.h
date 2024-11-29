@@ -7,7 +7,7 @@ class Blank : public Board {
     public:
         //No links detected
         //Returns '.'
-        char linkAt(int x, int y);
+        char linkAt(int x, int y) override;
 };
 
 #endif

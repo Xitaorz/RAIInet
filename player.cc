@@ -3,49 +3,58 @@
 
 using namespace std;
 
-Player::Player(unique_ptr<Board> pre, int id, int abilityCount, int downloadedV, int downloadedF): 
-previous{move(pre)}, id{id}, abilityCount{abilityCount}, downloadedF{downloadedF}, downloadedV{downloadedV}{}
+Player::Player(Board* pre, int id): 
+previous{pre}, id{id}{}
 
 
 void Player::addLink(int col, int row, int what, int strength, char name){
-    links[name] = Link(col, row, what, strength, name);
+    if (name == 'S') server.emplace_back(make_unique<Link>(col, row, what, strength, name));
+    else links.emplace(name, new Link(col, row, what, strength, name));   
 }
 
 void Player::addFireWall(int col, int row, char name) {
-    fireWalls.emplace_back(Link(col, row, 2, 0, name));
+    fireWalls.emplace_back(make_unique<Link>(col, row, 2, 0, name));
 }
 
 char Player::linkAt(int col, int row){
     for (auto& [name, link] : links) {
-        if (links[name].getCol() == col && links[name].getRow() == row) {
+        if (link->getCol() == col && link->getRow() == row) {
             return name;
         }
     }
-    for (auto f : fireWalls) {
-        if (f.getCol() == col && f.getRow() == row) {
-            return f.getName();
+    for (auto& f : fireWalls) {
+        if (f->getCol() == col && f->getRow() == row) {
+            return f->getName();
+        }
+    }
+    for (auto& s : server) {
+        if (s->getCol() == col && s->getRow() == row) {
+            return s->getName();
         }
     }
     return previous->linkAt(col, row);
 }
 
-Link* Player::getLink(char name) {
-    for (int i = 0; i < linkNum; ++i) {
-        if (links[i].getName() == name) return &links[i];
+Link* Player::getLink(char n) {
+    for (auto& [name, link] : links) {
+        if (n == name) return link.get();
     }
+    cout << "got here" << endl;
     return nullptr;
 }
 
 Link* Player::getAllLink(char name) {
-    for (int i = 0; i < linkNum; ++i) {
-        if (links[i].getName() == name) return &links[i];
-    }
+    cout << "got here" << endl;
+    Link* target = getLink(name);
+    if (target) return target;
+    cout << "got here" << endl;
     for (auto& [id, opp]: opponents){
         Link* theLink = opp->getLink(name);
         if (theLink) {
             return theLink;
         }
     }
+    throw;
 }
 
 int Player::getId() {return id;}
@@ -57,7 +66,7 @@ int Player::getDownloadedF(){return downloadedF;}
 int Player::getDownloadedV(){return downloadedV;}
 
 bool Player::moveLink(char name, int moveC, int moveR) {
-    Link* theLink = &links[name];
+    Link* theLink = links[name].get();
     if(theLink->move(moveC, moveR)) return true;
     int newC = theLink->getCol();
     int newR = theLink->getRow();
@@ -72,10 +81,11 @@ bool Player::moveLink(char name, int moveC, int moveR) {
         char target = opp->linkAt(newC, newR);
         Link* enemy = opp->getLink(target);
 
+
         //undo the move if enemy is invincible
-        if (enemy->isInvincible()) {
+        if (enemy && enemy->isInvincible()) {
             cerr << "The target link is invincible" << endl;
-            theLink->move(-moveC, - moveR);
+            theLink->move(-moveC, -moveR);
         }
 
         //reveal the link if it steps on a firewall
@@ -89,7 +99,7 @@ bool Player::moveLink(char name, int moveC, int moveR) {
         }
 
         //encountered a link
-        if (enemy) {
+        if (enemy != nullptr) {
             bool result = theLink->battle(enemy);
             if (result) {
                 download(target);
@@ -135,10 +145,10 @@ void Player::addOpponent(int id, Player* opp) {
 
 void Player::addAbility(char newName, unique_ptr<Ability> newAbility) {
     for (auto& [id, ability] : abilities) {
-        auto& [ptr, uses] = ability;
+        auto ptr = ability.first.get();
         if (newName == ptr->getName()) {
             ability.second++;
-            break;
+            return;
         }
     }
     abilities[abilityCount + 1] = {move(newAbility), 1};
@@ -146,8 +156,8 @@ void Player::addAbility(char newName, unique_ptr<Ability> newAbility) {
 }
 
 bool Player::fireWalled(int col, int row) {
-    for (auto f : fireWalls) {
-        if (f.getCol() == col && f.getRow() == row) return true;
+    for (auto& f : fireWalls) {
+        if (f->getCol() == col && f->getRow() == row) return true;
     }
     return false;
 }
@@ -161,10 +171,11 @@ bool Player::isFreezed() {
         freezed--;
         return true;
     }
+    else return false;
 }
 
 int Player::checkAbilityType(int id) {
-    char name = abilities[id].first->getName();
+    char name = (abilities[id].first)->getName();
     if (name == 'T') return 1;
     else if (name == 'F') return 2;
     else if (name == 'L' || name == 'P' || name == 'S' || name == 'M') return 3;
@@ -175,51 +186,62 @@ int Player::checkAbilityType(int id) {
 }
 
 //case 1
-void Player::useAbility(int id, int opp){
-    abilities[id].first->use(opponents[opp]);  
-    abilities[id].second--;
+void Player::useAbility(int abilityId, int opp){
+    abilities[abilityId].first->use(opponents[opp]);  
+    abilities[abilityId].second--;
     abilityCount--;       
 }
 
-void Player::useAbility(int id, int col, int row){
-    abilities[id].first->use(col, row, this);
-    abilities[id].second--;
+void Player::useAbility(int abilityId, int col, int row){
+    abilities[abilityId].first->use(col, row, this);
+    abilities[abilityId].second--;
     abilityCount--;
 }
 
-void Player::useAbility(int id, char name){
-    abilities[id].first->use(getAllLink(name), this);
-    abilities[id].second--;
+void Player::useAbility(int abilityId, char name){
+    cout << abilityId << endl;
+    (abilities[abilityId].first)->use(getAllLink(name), this);
+    abilities[abilityId].second--;
     abilityCount--;
 }
 
-void Player::useAbility(int id, char name1, char name2){
-    abilities[id].first->use(getLink(name1), getLink(name2));
-    abilities[id].second--;
+void Player::useAbility(int abilityId, char name1, char name2){
+    abilities[abilityId].first->use(getLink(name1), getLink(name2));
+    abilities[abilityId].second--;
     abilityCount--;
 }
 
 void Player::printLinks(int id){
     if (id == this->id){
-        for (int i = 0; i < linkNum; i++){
-            cout << links[i].getName() << ": " << links[i].getType() << links[i].getStrength();
+        int i = 0;
+        for (auto& [name, link] : links){
+            cout << link->getName() << ": " << link->getType() << link->getStrength() << ' ';
             if (i == 3) cout << endl;
+            i++;
         }
     }else {
-        for (int i = 0; i < linkNum; i++){
-            if (links[i].isVisible()){
-                cout << links[i].getName() << ": " << links[i].getType() << links[i].getStrength();
+        int i = 0;
+        for (auto& [name, link] : links){
+            if (link->isVisible()){
+                cout << link->getName() << ": " << link->getType() << link->getStrength()<< ' ';
             }else{
-                cout << links[i].getName() << ": " << "? " ;
+                cout << link->getName() << ": " << "? " ;
             }
             
             if (i == 3) cout << endl;
+            i++;
         }
     }
+    cout << endl;
      
 }
 
-
+void Player::printAbilities(){
+    for (auto& [abilityId, ability] : abilities) {
+        auto ptr = ability.first.get();
+        cout << "ID: " << abilityId << ": " << ptr->getName() << " uses: " << ability.second << endl;
+    }
+}
 
 
 

@@ -4,9 +4,12 @@
 #include "link.h"
 
 class KingCrimson : public Ability {
-    char id = 'K';
     public:
-        void use(Link* link1, Link* link2) override;
+        KingCrimson() { id = 'K'; }
+        void use(Player * opp){}
+        void use(int col, int row, Player* player){}
+        void use(Link* link, Player* player = nullptr){}
+        void use(Link* link1, Link* link2);
 };
 
 #endif

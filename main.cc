@@ -15,6 +15,8 @@
 #include "firewall.h"
 #include "scan.h"
 #include "download.h"
+#include "text.h"
+#include "observer.h"
 
 using namespace std;        
 
@@ -24,93 +26,75 @@ int main () {
     // Board setup (concrete subject)
     unique_ptr<Board> board {new Blank};
 
-    Studio s{move(board)};
+    Studio s{board.get()};
 
     vector<Observer*> observers;
     
-    int playerNum;
+    char playerNum;
 
     cout << "Enter the number of players: ";
     cin >> playerNum;
-
+    
     s.startGame(playerNum);
     unique_ptr<Observer> textObs1 {new Text(&s, 1, 8)};
-    unique_ptr<Observer> textObs2 {new Text(&s, 2, 8)};
+    //unique_ptr<Observer> textObs2 {new Text(&s, 2, 8)};
 
     string command;
+    s.notifyObservers();
+    cerr << "please enter the link setup for player1" << endl;
+    while(cin>>command) {
+        if (command == "-link1"){
+            // Get input file for link tokens
+            string fileName;
+            if (cin >> fileName) {
+                if (s.addPlayerLinks(fileName, 0)) return 1;
+                break;
+            } else {
+                cerr << "Error: Missing file name for link tokens" << endl;
+                return 1;
+            }
+        }
+   }
+   s.notifyObservers();
 
-    while (cin >> command){ // Player input command
-        cerr << "Curreent turn: Player " << s.whoseTurn() << endl;
-
-        // SETUP ABILITIES --------------------------------
-
-        // Specifies abilities for player 1
-            // Default: "LFDSP"
-        if(command == "-ability1") {
-            string abilities;
-            cin >> abilities;
-            s.addPlayerAbilities(abilities, 1);
-
-            
-        
-        // Specifies abilities for player 2
-            // Default: "LFDSP"
-        } else if (command == "-ability2"){
-            string abilities;
-            cin >> abilities;
-            s.addPlayerAbilities(abilities, 2);
-
-
-
-        //SETUP LINKS--------------------------------------------------------------
-
-        // Specifies link tokens for player 1
-        }else if (command == "-link1"){
+    cerr << "please enter the link setup for player2" << endl;
+    while(cin>>command) {
+        if (command == "-link2"){
             // Get input file for link tokens
             string fileName;
             if (cin >> fileName) {
                 if (s.addPlayerLinks(fileName, 1)) return 1;
-            } else {
-                cerr << "Error: Missing file name for link tokens" << endl;
-                return 1;
-            } 
-
-        // Specifies link tokens for player 2
-        }else if (command == "-link2"){
-            // Get input file for link tokens
-            string fileName;
-            if (cin >> fileName) {
-                if (s.addPlayerLinks(fileName, 2)) return 1;
+                break;
             } else {
                 cerr << "Error: Missing file name for link tokens" << endl;
                 return 1;
             }
+        }
+    }
+    s.notifyObservers();
 
-        // Specifies link tokens for player 3
-        }else if (command == "-link3"){
-            // Get input file for link tokens
-            string fileName;
-            if (cin >> fileName) {
-                if (s.addPlayerLinks(fileName, 2)) return 1;
-            } else {
-                cerr << "Error: Missing file name for link tokens" << endl;
-                return 1;
-            }
-        
-        // Specifies link tokens for player 4
-        }else if (command == "-link4"){
-            // Get input file for link tokens
-            string fileName;
-            if (cin >> fileName) {
-                if (s.addPlayerLinks(fileName, 2)) return 1;
-            } else {
-                cerr << "Error: Missing file name for link tokens" << endl;
-                return 1;
-            }
+    cerr << "please enter the ability setup for player1" << endl;
+    while(cin>>command) {      
+        if(command == "-ability1") {
+            string abilities;
+            cin >> abilities;
+            s.addPlayerAbilities(abilities, 0);
+            break;
+        }
+   }
 
+    cerr << "please enter the ability setup for player2" << endl;
+    while(cin>>command) {
+        if(command == "-ability2") {
+            string abilities;
+            cin >> abilities;
+            s.addPlayerAbilities(abilities, 1);
+            break;
+        }
+   }
 
-
-
+    cout << "current Player: Player" << s.whoseTurn() + 1 << endl;
+    while (cin >> command){ // Player input command
         // TODO: check implementation & ensure functional display
         // } else if (command == "-graphics") {
         //     //add graphic observer
@@ -121,14 +105,16 @@ int main () {
         // "move a <dir>" moves the link 'a' in the direction 'dir'
             // a has to be a link the currrent player controls
             // dir can be 'U', 'D', 'L', or 'R'
-        } else if (command == "move") {
+        if (command == "move") {
             char linkId, dir;
             cin >> linkId;
             cin >> dir;
             while(s.movePlayer(linkId, dir)){
+                cin >> command;
                 cin >> linkId;
                 cin >> dir;
             }
+            s.notifyObservers();
             
         
         // "ability <N>" uses ability with ID 'N', with some abilities requiring additional info
@@ -141,12 +127,12 @@ int main () {
             // KingCrimson: "ability <K> b x y" moves link 'b' to position (x, y)
             // TheWorld: "ability <T>" skips the opponent's next turn (player gets 2 turns)
         } else if (command == "ability") {
-            int order, x, y;
+            int x, y;
             char which, whom, link1, link2;
-            char temp;
-            char abilityId;
-            cin >> temp >> abilityId >> temp;
-            switch (s.whichAbility(abilityId)) {
+            char cAbilityId;
+            cin >> cAbilityId;
+            int abilityId = cAbilityId - '0';
+            switch (s.whichAbility(cAbilityId)) {
                 case 1:
                     cin >> whom;
                     s.usePlayerAbilityType1(abilityId, whom);
@@ -160,6 +146,11 @@ int main () {
                     cin >> link1 >> link2;
                     s.usePlayerAbilityType4(abilityId, link1, link2);
             }
+            s.notifyObservers();
+    }else if (command == "print"){
+        s.notifyObservers();
+    }else if (command == "abilities"){
+        s.printPlayerAbilities();
     }
 
             
@@ -169,8 +160,10 @@ int main () {
         int lost = s.whoLost();
         if (won != 0) {
             cout << "Congratulations! Player " <<  won << ", you've downloaded 4 data, you have won the game!" << endl;
-        } if (lost != 0) {
+        }else if (lost != 0) {
             cout << "Sorry! Player " << lost << ", you've downloaded 4 viruses, you have lost the game!" << endl;
+        }else{
+            cout << endl << "current Player: Player" << s.whoseTurn() + 1 << endl << endl;
         }
 
     }

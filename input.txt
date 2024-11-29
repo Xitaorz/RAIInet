@@ -1,0 +1,6 @@
+2
+-link1 names.txt
+-link2 names.txt
+-ability1 LFFFF
+-ability2 LFFFF
+ability 1 a

@@ -3,20 +3,19 @@
 
 using namespace std;
 
-Text::Text(Studio *studio, int id,  int sideLength):
-studio{studio}, sideLength{sideLength}{
+Text::Text(Studio *studio, int id, int sideLength):
+id{id}, studio{studio}, sideLength{sideLength}{
     studio->attach(this);
     if (id == 1) otherId = 2;
     else otherId = 1;
 }
 
 void Text::notify () {
-    cout << "Player " << id << ':' << endl;
+    cout << "Player 1" << endl;
     cout << "Downloaded: ";
     studio->printDownloaded(id);
-    cout << endl << "Abilities: ";
+    cout << "Abilities: ";
     studio->printPlayerAbilityCount(id);
-    cout << endl;
     studio->printLinks(id);
     for (int j = 0; j < sideLength; ++j) {
         cout << '=';
@@ -24,7 +23,7 @@ void Text::notify () {
     cout << endl;
     for (int i = 0; i < sideLength; ++i) {
         for (int j = 0; j < sideLength; ++j) {
-            cout << studio->getState(i, j);
+            cout << studio->getState(j, i);
         }
         cout << endl;
     }
@@ -35,8 +34,7 @@ void Text::notify () {
     cout << "Player " << otherId << ':' << endl;
     cout << "Downloaded: ";
     studio->printDownloaded(otherId);
-    cout << endl << "Abilities: ";
+    cout  << "Abilities: ";
     studio->printPlayerAbilityCount(otherId);
-    cout << endl;
-    studio->printLinks(id);
+    studio->printLinks(otherId);
 }

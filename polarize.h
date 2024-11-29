@@ -4,9 +4,12 @@
 #include "link.h"
 
 class Polarize : public Ability {
-    char id = 'P';
     public:
-        void use(Link* , Player* player) override;
+        Polarize() { id = 'P'; }
+        void use(Player * opp){}
+        void use(int col, int row, Player* player){}
+        void use(Link* link1, Link* link2){}
+        void use(Link* link, Player* player);
 };
 
 #endif

@@ -7,10 +7,12 @@
 using namespace std;
 
 class LinkBoost : public Ability{
-    char id = 'L';
     public:
-        LinkBoost(); 
-        void use(Link* link, Player* player) override;
+        LinkBoost() { id = 'L'; }
+        void use(Player * opp){}
+        void use(int col, int row, Player* player){}
+        void use(Link* link1, Link* link2){}
+        void use(Link* link, Player* player);
 
 };
 

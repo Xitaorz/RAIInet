@@ -44,7 +44,7 @@ bool Link::move(int moveCol, int moveRow) {
 
 bool Link::battle(Link* target) {
     
-    if (strength > target->getStrength()) return true;
+    if (strength >= target->getStrength()) return true;
     return false;
 }
 

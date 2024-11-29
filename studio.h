@@ -17,19 +17,19 @@
 #include "madeInHeaven.h"
 #include "theWorld.h"
 #include "kingCrimson.h"
-#include "observer.h"
-#include "text.h"
+
+
 
 using namespace std;
 
 class Studio : public Subject{
-    unique_ptr<Board> theBoard;
-    vector<Player*> players;
+    Board* theBoard;
+    vector<unique_ptr<Player>> players;
     int playerNum = 0;
-    int turn = 0;
+    int turn = 0;   
     public:
         // Studio ctor
-        explicit Studio(unique_ptr<Board> board) : theBoard(move(board)) {}
+        explicit Studio(Board* board) : theBoard(board) {}
 
         // don't need dtor cuz unique pointer being used
         
@@ -37,14 +37,11 @@ class Studio : public Subject{
         unique_ptr<Board> gameboard();
 
         // Display Methods ----------------------------------------------------
-        void reset();
-        // renders next move
-        void render();
 
         // calls the cell at the location on the board
         char getState(int row, int col) const override;
 
-        void startGame(int PlayerNum);
+        void startGame(char PlayerNum);
 
         void addPlayerAbilities(string abilities, int id);
 
@@ -54,7 +51,7 @@ class Studio : public Subject{
 
         int whoseTurn();
 
-        int whichAbility(int abilityId);
+        int whichAbility(char abilityId);
 
         void usePlayerAbilityType1(int abilityId, int opp);
         void usePlayerAbilityType2(int abilityId, int col, int row);
@@ -67,6 +64,7 @@ class Studio : public Subject{
         void printDownloaded(int id);
         void printPlayerAbilityCount(int id);
         void printLinks(int id);
+        void printPlayerAbilities();
 };
 
 

@@ -15,19 +15,21 @@ using namespace std;
 
 class Player : public Board {
     protected:
+        Board* previous;
         int id;
-        unique_ptr<Board> previous;
-        map<char, Link> links;
-        vector<Link> fireWalls;
+        map<char, unique_ptr<Link>> links;
+        vector<unique_ptr<Link>> fireWalls;
+        vector<unique_ptr<Link>> server;
         int linkNum = 8;
         map<int, Player*> opponents;
         //map<int, Player *> opponents;     //in case there are more than 2 players
         int abilityCount; // # of unused abilities
         map <int, pair<unique_ptr<Ability>, int>> abilities;
-        int downloadedV, downloadedF;
+        int downloadedV = 0;
+        int downloadedF = 0;
         int freezed = 0;       
     public:
-        Player(unique_ptr<Board> pre, int id, int abilityCount = 0, int downloadedV = 0, int downloadedF = 0){};
+        Player(Board* pre, int id);
         
         //adders
         void addLink(int col, int row, int what, int strength, char name);
@@ -62,6 +64,7 @@ class Player : public Board {
 
         //
         void printLinks(int id);
+        void printAbilities();
 };
 
 #endif

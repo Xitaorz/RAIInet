@@ -4,9 +4,12 @@
 #include "player.h"
 
 class TheWorld : public Ability {
-    char id = 'T';
     public:
-        void use(Player* player) override;
+        TheWorld() { id = 'T'; }
+        void use(int col, int row, Player* player){}
+        void use(Link* link, Player* player = nullptr){}
+        void use(Link* link1, Link* link2){}
+        void use(Player* player);
 };
 
 #endif
