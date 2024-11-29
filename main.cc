@@ -95,18 +95,28 @@ int main () {
     cout << "=======================" << endl;
     cout << "current Player: Player" << s.whoseTurn() + 1 << endl;
     cout << "=======================" << endl;
-    while (cin >> command){ // Player input command
+
+    ifstream f{};
+    while (f >> command || cin >> command){ // Player input command
         // TODO: check implementation & ensure functional display
         // } else if (command == "-graphics") {
         //     //add graphic observer
         //     s.attach();
-
+        if (s.jumpPlayer()) {
+                cerr << "Player " << s.whoseTurn() + 1 << " is jumped due to The World" << endl;
+                s.turnOver();
+                cout << "=======================" << endl;
+                cout << "current Player: Player" << s.whoseTurn() + 1 << endl;
+                cout << "=======================" << endl;         
+                continue;
+            }
         // INTERACTIVE COMMANDS ---------------------------------------------------------
 
         // "move a <dir>" moves the link 'a' in the direction 'dir'
             // a has to be a link the currrent player controls
             // dir can be 'U', 'D', 'L', or 'R'
         if (command == "move") {
+            
             char linkId, dir;
             cin >> linkId;
             cin >> dir;
@@ -137,7 +147,7 @@ int main () {
             switch (whichType) {
                 case 1:
                     cin >> whom;
-                    s.usePlayerAbilityType1(abilityId, whom);
+                    s.usePlayerAbilityType1(abilityId, whom - '0');
                     break;
                 case 2:
                     cin >> x >> y;
@@ -154,23 +164,35 @@ int main () {
             }
             continue;
 
-        }else if (command == "print"){
+        }else if (command == "board"){
             s.notifyObservers();
             continue;
         }else if (command == "abilities"){
             s.printPlayerAbilities();
+            continue;
+        }else if (command == "sequence"){
+            string filename;
+            cin >> filename;
+            f.open(filename);
+            continue;
+        }else if (command == "quit"){
+            return 2;
+        }else {
+            cerr << "invalid command, try again"<< endl;
             continue;
         }
 
             
 
         // WIN/LOSS CONDITIONS ----------------------------------------------------------
-        int won = s.whoWon();
-        int lost = s.whoLost();
+        int won = s.whoWon() + 1;
+        int lost = s.whoLost() + 1;
         if (won != 0) {
             cout << "Congratulations! Player " <<  won << ", you've downloaded 4 data, you have won the game!" << endl;
+            return 0;
         }else if (lost != 0) {
             cout << "Sorry! Player " << lost << ", you've downloaded 4 viruses, you have lost the game!" << endl;
+            return 0;
         }else{
             s.turnOver();
             cout << "=======================" << endl;

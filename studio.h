@@ -47,6 +47,8 @@ class Studio : public Subject{
 
         bool addPlayerLinks(string filename, int id);
 
+        bool jumpPlayer();
+
         bool movePlayer(char link, char dir);
 
         int whoseTurn();

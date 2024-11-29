@@ -69,8 +69,30 @@ bool Player::moveLink(char name, int moveC, int moveR) {
     int newR = theLink->getRow();
 
     //reached the border
-    if (abs(newR - theLink->getInitR()) == 8) {
+    if (newR == 8) {
+        if (id != 1){
+            return true;
+        }
         download(name);
+        return false;
+    }else if (newR == -1) {
+        if (id != 2){
+            return true;
+        }
+        download(name);
+        return false;
+    }else if (newC == 8) {
+        if (id != 3){
+            return true;
+        }
+        download(name);
+        return false;
+    }else if (newC == -1) {
+        if (id != 4){
+            return true;
+        }
+        download(name);
+        return false;
     }
 
 
@@ -135,7 +157,7 @@ void Player::deleteLink(char name) {
 }
 
 void Player::addOpponent(int id, Player* opp) {
-    opponents[id] = opp;
+    opponents.emplace(id, opp);
 }
 
 
@@ -149,7 +171,7 @@ void Player::addAbility(char newName, unique_ptr<Ability> newAbility) {
             return;
         }
     }
-    abilities[abilityCount + 1] = {move(newAbility), 1};
+    abilities[abilities.size()+1] = {move(newAbility), 1};
     abilityCount++;    
 }
 
@@ -184,8 +206,8 @@ int Player::checkAbilityType(int id) {
 }
 
 //case 1
-void Player::useAbility(int abilityId, int opp){
-    abilities[abilityId].first->use(opponents[opp]);  
+void Player::useAbility(int abilityId, int opp){ 
+    abilities[abilityId].first->use(opponents[opp]);    
     abilities[abilityId].second--;
     abilityCount--;       
 }
@@ -203,13 +225,13 @@ void Player::useAbility(int abilityId, char name){
 }
 
 void Player::useAbility(int abilityId, char name1, char name2){
-    abilities[abilityId].first->use(getLink(name1), getLink(name2));
+    abilities[abilityId].first->use(getLink(name1), getAllLink(name2));
     abilities[abilityId].second--;
     abilityCount--;
 }
 
 void Player::printLinks(int id){
-    if (id + 1 == this->id){
+    if (id  == this->id){
         int i = 0;
         for (auto& [name, link] : links){
             cout << link->getName() << ": " << link->getType() << link->getStrength() << ' ';

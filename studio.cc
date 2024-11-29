@@ -17,7 +17,7 @@ void Studio::startGame(char playN){
 
     for (int i = 0; i < playerNum; ++i) {
         for (int j = 0; j < playerNum; ++j){
-            if ( i != j) players[i]->addOpponent(j + 1, players[j].get()); 
+            if ( i != j) players[i]->addOpponent(players[j]->getId(), players[j].get()); 
         }   
     }
 }
@@ -163,6 +163,13 @@ bool Studio::addPlayerLinks(string filename, int id) {
 }
 
 
+bool Studio::jumpPlayer(){
+    int id = whoseTurn();
+    if (players[id]->isFreezed()){
+        return true;          
+    }
+}
+
 //return:
     //true -> something is wrong
     //false -> nothing is wrong
@@ -170,30 +177,27 @@ bool Studio::movePlayer(char link, char dir){
     int id = whoseTurn();
     
     if (players[id]->getLink(link)) {
-        if (players[id]->isFreezed()){
+        
+        int moveCol = 0;
+        int moveRow = 0;
+
+        //check direction
+        if (dir == 'u') {
+            moveRow = -1;
+        }else if (dir == 'd'){
+            moveRow = 1;
+        }else if (dir == 'l'){
+            moveCol = -1;
+        }else{
+            moveCol= 1;
+        }
+        if(players[id]->moveLink(link, moveCol, moveRow)){
+            cerr << "Invalid move, try again" << endl;
+            return true;
+        }else {
             return false;
         }
-        else {
-            int moveCol = 0;
-            int moveRow = 0;
-
-            //check direction
-            if (dir == 'u') {
-                moveRow = -1;
-            }else if (dir == 'd'){
-                moveRow = 1;
-            }else if (dir == 'l'){
-                moveCol = -1;
-            }else{
-                moveCol= 1;
-            }
-            if(players[id]->moveLink(link, moveCol, moveRow)){
-                cerr << "Invalid move, try again" << endl;
-                return true;
-            }else {
-                return false;
-            }
-        }
+        
         
     }
     cerr << "Invalid Command, try again" << endl;
@@ -239,7 +243,7 @@ int Studio::whoWon(){
     for (int i = 0; i < playerNum; ++i){
         if (players[i]->getDownloadedF() >= 4) return i;
     } 
-     return 0; //nobody won
+    return 0; //nobody won
 }
 
 int Studio::whoLost(){
