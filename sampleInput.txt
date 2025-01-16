@@ -1,0 +1,17 @@
+2
+-link1 names.txt
+-link2 names.txt
+-ability1 KKKKK
+-ability2 KKKKK
+ability 1 b A
+move b d
+move D u
+ability 1 e B
+move e d
+move D u
+ability 1 g G
+move g d
+move D u
+ability 1 h H
+move h d
+

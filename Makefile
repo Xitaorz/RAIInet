@@ -14,7 +14,7 @@ MAKEFILE_NAME = ${firstword ${MAKEFILE_LIST}}	# makefile name
 SOURCES = $(wildcard *.cc)			# source files (*.cc)
 OBJECTS = ${SOURCES:.cc=.o}			# object files forming executable
 DEPENDS = ${OBJECTS:.o=.d}			# substitute ".o" with ".d"
-EXEC = raiinet					    # executable name
+EXEC = RAIInet					    # executable name
 
 ########## Targets ##########
 
@@ -30,5 +30,5 @@ ${OBJECTS} : ${MAKEFILE_NAME}	    # OPTIONAL : changes to this file => recompile
 -include ${DEPENDS}				# include *.d files containing program dependences
 
 clean :						# remove files that can be regenerated
-	rm -f ${DEPENDS} ${OBJECTS} ${EXEC}
+	rm -f ${DEPENDS} ${OBJECTS}
 	

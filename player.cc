@@ -203,7 +203,7 @@ int Player::checkAbilityType(int id) {
     char name = (abilities[id].first)->getName();
     if (name == 'T') return 1;
     else if (name == 'F') return 2;
-    else if (name == 'L' || name == 'P' || name == 'S' || name == 'M') return 3;
+    else if (name == 'L' || name == 'P' || name == 'S' || name == 'M' || name == 'D') return 3;
     else return 4;
     
 
